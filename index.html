@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6fed">
+<title>이따줄게</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>이따줄게</h1>
+  <div class="summary">
+    <div class="card lend"><span>받을 돈</span><strong id="sumLend">0원</strong></div>
+    <div class="card borrow"><span>갚을 돈</span><strong id="sumBorrow">0원</strong></div>
+  </div>
+  <div id="alert" class="alert" hidden></div>
+</header>
+
+<main>
+  <section id="view-list" class="view">
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="이름·메모 검색" autocomplete="off">
+      <div class="seg" id="filter">
+        <button type="button" data-f="open" class="on">진행 중</button>
+        <button type="button" data-f="done">완료</button>
+        <button type="button" data-f="all">전체</button>
+      </div>
+    </div>
+    <ul id="list" class="list"></ul>
+    <p id="empty" class="empty" hidden>기록이 없습니다.<br>아래 + 버튼으로 추가하세요.</p>
+  </section>
+
+  <section id="view-people" class="view" hidden>
+    <ul id="people" class="list"></ul>
+    <p id="peopleEmpty" class="empty" hidden>진행 중인 기록이 없습니다.</p>
+  </section>
+
+  <section id="view-settings" class="view" hidden>
+    <div class="panel">
+      <h2>백업</h2>
+      <p class="muted">기록은 이 폰 안에만 저장됩니다. 브라우저 데이터 삭제나 폰 교체에 대비해 가끔 백업 파일을 저장해 두세요.</p>
+      <p class="muted" id="lastBackup"></p>
+      <div class="btns">
+        <button type="button" id="btnExport" class="primary">백업 파일 저장</button>
+        <button type="button" id="btnImport">백업 불러오기</button>
+        <input type="file" id="fileImport" accept="application/json,.json" hidden>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>저장소</h2>
+      <p class="muted" id="storageInfo">확인 중…</p>
+    </div>
+    <div class="panel">
+      <h2>초기화</h2>
+      <p class="muted">모든 기록을 삭제합니다. 되돌릴 수 없습니다.</p>
+      <div class="btns"><button type="button" id="btnWipe" class="danger">전체 삭제</button></div>
+    </div>
+  </section>
+</main>
+
+<button type="button" id="fab" class="fab" aria-label="새 기록">+</button>
+
+<nav class="tabs">
+  <button type="button" data-v="list" class="on">목록</button>
+  <button type="button" data-v="people">사람별</button>
+  <button type="button" data-v="settings">설정</button>
+</nav>
+
+<dialog id="dlgEntry">
+  <form id="formEntry" autocomplete="off">
+    <h2 id="entryTitle">새 기록</h2>
+    <div class="seg type">
+      <label><input type="radio" name="type" value="lend" checked><span>빌려줌</span></label>
+      <label><input type="radio" name="type" value="borrow"><span>빌림</span></label>
+    </div>
+    <label class="field"><span>상대 이름</span><input name="name" list="names" required maxlength="40"></label>
+    <label class="field"><span>금액</span><input name="amount" inputmode="numeric" required placeholder="0"></label>
+    <div class="row">
+      <label class="field"><span>날짜</span><input name="date" type="date" required></label>
+      <label class="field"><span>갚기로 한 날</span><input name="due" type="date"></label>
+    </div>
+    <label class="field"><span>메모</span><textarea name="memo" rows="2" maxlength="300"></textarea></label>
+    <div class="btns end">
+      <button type="button" data-close>취소</button>
+      <button type="submit" class="primary">저장</button>
+    </div>
+  </form>
+  <datalist id="names"></datalist>
+</dialog>
+
+<dialog id="dlgDetail">
+  <div id="detailBody" tabindex="-1" autofocus></div>
+  <form id="formPay" class="payform" autocomplete="off">
+    <h3>상환 기록 추가</h3>
+    <div class="row">
+      <label class="field"><span>금액</span><input name="amount" inputmode="numeric" required></label>
+      <label class="field"><span>날짜</span><input name="date" type="date" required></label>
+    </div>
+    <label class="field"><span>메모</span><input name="memo" maxlength="100"></label>
+    <div class="btns">
+      <button type="submit" class="primary">상환 추가</button>
+      <button type="button" id="btnPayAll">전액 상환 처리</button>
+    </div>
+  </form>
+  <div class="btns end">
+    <button type="button" id="btnDelete" class="danger">삭제</button>
+    <button type="button" id="btnEdit">수정</button>
+    <button type="button" data-close>닫기</button>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
