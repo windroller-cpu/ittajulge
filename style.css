@@ -103,6 +103,11 @@ input:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset:
 .item .sub, .item .memo { font-size: 13px; color: var(--muted); }
 .item .memo { grid-column: 1 / -1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .item .sub.right { text-align: right; }
+.item .settle {
+  grid-column: 1 / -1; margin-top: 8px; padding: 7px 0;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
+  cursor: pointer; font-size: 14px;
+}
 .lend-c { color: var(--lend); }
 .borrow-c { color: var(--borrow); }
 .badge {

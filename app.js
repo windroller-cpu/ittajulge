@@ -56,6 +56,7 @@ const DB = {
   },
   all() { return this.tx('readonly', s => s.getAll()); },
   put(e) { return this.tx('readwrite', s => { s.put(e); }); },
+  putMany(list) { return this.tx('readwrite', s => { list.forEach(e => s.put(e)); }); },
   del(id) { return this.tx('readwrite', s => { s.delete(id); }); },
   replaceAll(list) {
     return this.tx('readwrite', s => { s.clear(); list.forEach(e => s.put(e)); });
@@ -165,6 +166,7 @@ function renderPeople() {
     return `<li class="item" data-name="${esc(p.name)}">
       <div class="name">${esc(p.name)}</div>${label}
       <div class="sub">${detail}</div><div class="sub right">${p.count}건</div>
+      <button type="button" class="settle" data-settle="${esc(p.name)}">전체 상환</button>
     </li>`;
   }).join('');
   $('#peopleEmpty').hidden = people.length > 0;
@@ -188,12 +190,33 @@ $$('#filter button').forEach(b => b.addEventListener('click', () => {
 $('#search').addEventListener('input', renderList);
 
 $('#people').addEventListener('click', ev => {
+  const btn = ev.target.closest('button[data-settle]');
+  if (btn) return settlePerson(btn.dataset.settle);
   const li = ev.target.closest('li[data-name]');
   if (!li) return;
   $('#search').value = li.dataset.name;
   showView('list');
   renderList();
 });
+
+// 한 사람의 진행 중 기록을 모두 오늘 날짜로 상환 처리
+async function settlePerson(name) {
+  const open = entries.filter(e => e.name === name && !isDone(e));
+  if (!open.length) return;
+  const sum = type => open.filter(e => e.type === type).reduce((a, e) => a + remaining(e), 0);
+  const parts = [sum('lend') && `받을 돈 ${won(sum('lend'))}`, sum('borrow') && `갚을 돈 ${won(sum('borrow'))}`]
+    .filter(Boolean).join(' · ');
+  if (!confirm(`${name}: 진행 중 ${open.length}건 (${parts})을 오늘 날짜로 모두 상환 처리할까요?`)) return;
+  const now = new Date().toISOString();
+  const updated = open.map(e => ({
+    ...e,
+    payments: [...e.payments, { id: uid(), amount: remaining(e), date: today(), memo: '전체 상환' }],
+    updatedAt: now,
+  }));
+  await DB.putMany(updated);
+  for (const u of updated) entries[entries.findIndex(x => x.id === u.id)] = u;
+  render();
+}
 
 $$('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
 

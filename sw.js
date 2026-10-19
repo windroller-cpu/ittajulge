@@ -1,5 +1,5 @@
 // 앱 파일을 캐시해 오프라인에서도 실행. 캐시를 먼저 보여주고 백그라운드로 최신 파일을 받아둔다.
-const CACHE = 'ittajulge-v1';
+const CACHE = 'ittajulge-v2';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
