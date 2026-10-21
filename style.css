@@ -157,7 +157,8 @@ dialog h2 { margin: 0 0 12px; font-size: 18px; }
 dialog h3 { margin: 16px 0 8px; font-size: 15px; }
 .field { display: block; margin-top: 10px; }
 .field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.row .field input { min-width: 0; }
 .seg.type { margin-bottom: 4px; }
 
 .detail-amt { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 4px 0; }
